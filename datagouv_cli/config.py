@@ -18,7 +18,7 @@ def load_config() -> dict:
     if not CONFIG_PATH.exists():
         logging.warning(
             "No config has been specified, defaulting to prod environment. "
-            "Run `datagouv setup` to create a config file and get rid of this message."
+            "Run `datagouv-cli setup` to create a config file and get rid of this message."
         )
         return {"headers": CLI_USER_AGENT}
     return json.loads(CONFIG_PATH.read_text()) | {"headers": CLI_USER_AGENT}
