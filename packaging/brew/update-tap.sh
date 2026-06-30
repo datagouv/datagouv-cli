@@ -6,6 +6,7 @@ FORMULA_DIR="${2:?Usage: update-tap.sh <version> <formula-dir>}"
 
 TAP_REPO="${HOMEBREW_TAP_REPO:-datagouv/homebrew-tap}"
 TAP_URL="https://github.com/${TAP_REPO}.git"
+CLI_NAME="datagouv-cli"
 
 if [[ -z "${HOMEBREW_TAP_TOKEN:-}" ]]; then
   echo "HOMEBREW_TAP_TOKEN is not set; skipping Homebrew tap update." >&2
@@ -18,16 +19,16 @@ trap 'rm -rf "${WORK_DIR}"' EXIT
 
 git clone "https://x-access-token:${HOMEBREW_TAP_TOKEN}@github.com/${TAP_REPO}.git" "${WORK_DIR}/tap"
 mkdir -p "${WORK_DIR}/tap/Formula"
-cp "${FORMULA_DIR}/datagouv.rb" "${WORK_DIR}/tap/Formula/datagouv.rb"
+cp "${FORMULA_DIR}/${CLI_NAME}.rb" "${WORK_DIR}/tap/Formula/${CLI_NAME}.rb"
 
 pushd "${WORK_DIR}/tap" > /dev/null
 git config user.name "github-actions[bot]"
 git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-git add Formula/datagouv.rb
+git add "Formula/${CLI_NAME}.rb"
 if git diff --cached --quiet; then
   echo "Homebrew formula unchanged."
 else
-  git commit -m "chore(formula): bump datagouv to v${VERSION}"
+  git commit -m "chore(formula): bump ${CLI_NAME} to v${VERSION}"
   git push origin HEAD
 fi
 popd > /dev/null

@@ -1,12 +1,13 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
-REPO="${DATAGOUV_CLI_REPO:-datagouv/datagouv_cli}"
-APT_BASE_URL="${DATAGOUV_APT_BASE_URL:-https://datagouv.github.io/datagouv_cli}"
+REPO="${DATAGOUV_CLI_REPO:-datagouv/datagouv-cli}"
+APT_BASE_URL="${DATAGOUV_APT_BASE_URL:-https://datagouv.github.io/datagouv-cli}"
 BREW_TAP="${DATAGOUV_BREW_TAP:-datagouv/tap}"
+CLI_NAME="datagouv-cli"
 
 log() {
-  echo "[datagouv-cli] $*"
+  echo "[${CLI_NAME}] $*"
 }
 
 require_command() {
@@ -23,11 +24,11 @@ install_via_apt() {
 
   log "Configuring APT repository..."
   sudo mkdir -p /etc/apt/keyrings
-  curl -fsSL "${APT_BASE_URL}/datagouv.gpg" | sudo gpg --dearmor -o /etc/apt/keyrings/datagouv.gpg
-  echo "deb [signed-by=/etc/apt/keyrings/datagouv.gpg] ${APT_BASE_URL} stable main" \
-    | sudo tee /etc/apt/sources.list.d/datagouv.list > /dev/null
+  curl -fsSL "${APT_BASE_URL}/${CLI_NAME}.gpg" | sudo gpg --dearmor -o "/etc/apt/keyrings/${CLI_NAME}.gpg"
+  echo "deb [signed-by=/etc/apt/keyrings/${CLI_NAME}.gpg] ${APT_BASE_URL} stable main" \
+    | sudo tee "/etc/apt/sources.list.d/${CLI_NAME}.list" > /dev/null
   sudo apt-get update
-  sudo apt-get install -y datagouv
+  sudo apt-get install -y "${CLI_NAME}"
 }
 
 install_via_brew() {
@@ -36,7 +37,7 @@ install_via_brew() {
     log "Adding Homebrew tap ${BREW_TAP}..."
     brew tap "${BREW_TAP}"
   fi
-  brew install datagouv
+  brew install "${CLI_NAME}"
 }
 
 install_via_binary() {
@@ -64,7 +65,7 @@ install_via_binary() {
     version="$(curl -fsSL "https://api.github.com/repos/${REPO}/releases/latest" | jq -r '.tag_name' | sed 's/^v//')"
   fi
 
-  asset="datagouv-${suffix}"
+  asset="${CLI_NAME}-${suffix}"
   url="https://github.com/${REPO}/releases/download/v${version}/${asset}"
   tmpdir="$(mktemp -d)"
   trap 'rm -rf "${tmpdir}"' EXIT
@@ -85,8 +86,8 @@ install_via_binary() {
   fi
 
   chmod +x "${tmpdir}/${asset}"
-  sudo install -m 0755 "${tmpdir}/${asset}" /usr/local/bin/datagouv
-  log "Installed datagouv to /usr/local/bin/datagouv"
+  sudo install -m 0755 "${tmpdir}/${asset}" "/usr/local/bin/${CLI_NAME}"
+  log "Installed ${CLI_NAME} to /usr/local/bin/${CLI_NAME}"
 }
 
 main() {
@@ -117,7 +118,7 @@ main() {
       ;;
   esac
 
-  datagouv --help
+  "${CLI_NAME}" --help
 }
 
 main "$@"

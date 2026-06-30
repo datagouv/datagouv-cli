@@ -5,16 +5,17 @@ VERSION="${1:?Usage: generate-formula.sh <version> <artifacts-dir> <output-dir>}
 ARTIFACTS_DIR="${2:?Usage: generate-formula.sh <version> <artifacts-dir> <output-dir>}"
 OUTPUT_DIR="${3:?Usage: generate-formula.sh <version> <artifacts-dir> <output-dir>}"
 
-REPO="${GITHUB_REPOSITORY:-datagouv/datagouv_cli}"
+REPO="${GITHUB_REPOSITORY:-datagouv/datagouv-cli}"
 BASE_URL="https://github.com/${REPO}/releases/download/v${VERSION}"
+CLI_NAME="datagouv-cli"
 
 mkdir -p "${OUTPUT_DIR}"
 
 generate_formula() {
   local class_suffix="$1"
   local binary_suffix="$2"
-  local output_file="${OUTPUT_DIR}/datagouv${class_suffix}.rb"
-  local binary_path="${ARTIFACTS_DIR}/datagouv-${binary_suffix}"
+  local output_file="${OUTPUT_DIR}/${CLI_NAME}${class_suffix}.rb"
+  local binary_path="${ARTIFACTS_DIR}/${CLI_NAME}-${binary_suffix}"
   local sha256_path="${binary_path}.sha256"
 
   if [[ ! -f "${binary_path}" || ! -f "${sha256_path}" ]]; then
@@ -26,20 +27,20 @@ generate_formula() {
   sha256="$(awk '{print $1}' "${sha256_path}")"
 
   cat > "${output_file}" <<EOF
-class Datagouv${class_suffix} < Formula
+class DatagouvCli${class_suffix} < Formula
   desc "CLI for data.gouv.fr"
   homepage "https://github.com/${REPO}"
-  url "${BASE_URL}/datagouv-${binary_suffix}"
+  url "${BASE_URL}/${CLI_NAME}-${binary_suffix}"
   version "${VERSION}"
   sha256 "${sha256}"
   license "MIT"
 
   def install
-    bin.install "datagouv-${binary_suffix}" => "datagouv"
+    bin.install "${CLI_NAME}-${binary_suffix}" => "${CLI_NAME}"
   end
 
   test do
-    assert_match "datagouv", shell_output("#{bin}/datagouv --help")
+    assert_match "datagouv", shell_output("#{bin}/${CLI_NAME} --help")
   end
 end
 EOF
@@ -48,18 +49,18 @@ EOF
 generate_formula "" "macos-arm64"
 generate_formula "Intel" "macos-amd64"
 
-cat > "${OUTPUT_DIR}/datagouv.rb" <<EOF
-class Datagouv < Formula
+cat > "${OUTPUT_DIR}/${CLI_NAME}.rb" <<EOF
+class DatagouvCli < Formula
   desc "CLI for data.gouv.fr"
   homepage "https://github.com/${REPO}"
 
   on_macos do
     if Hardware::CPU.arm?
-      url "${BASE_URL}/datagouv-macos-arm64"
-      sha256 "$(awk '{print $1}' "${ARTIFACTS_DIR}/datagouv-macos-arm64.sha256")"
+      url "${BASE_URL}/${CLI_NAME}-macos-arm64"
+      sha256 "$(awk '{print $1}' "${ARTIFACTS_DIR}/${CLI_NAME}-macos-arm64.sha256")"
     else
-      url "${BASE_URL}/datagouv-macos-amd64"
-      sha256 "$(awk '{print $1}' "${ARTIFACTS_DIR}/datagouv-macos-amd64.sha256")"
+      url "${BASE_URL}/${CLI_NAME}-macos-amd64"
+      sha256 "$(awk '{print $1}' "${ARTIFACTS_DIR}/${CLI_NAME}-macos-amd64.sha256")"
     end
   end
 
@@ -68,14 +69,14 @@ class Datagouv < Formula
 
   def install
     if Hardware::CPU.arm?
-      bin.install "datagouv-macos-arm64" => "datagouv"
+      bin.install "${CLI_NAME}-macos-arm64" => "${CLI_NAME}"
     else
-      bin.install "datagouv-macos-amd64" => "datagouv"
+      bin.install "${CLI_NAME}-macos-amd64" => "${CLI_NAME}"
     end
   end
 
   test do
-    assert_match "datagouv", shell_output("#{bin}/datagouv --help")
+    assert_match "datagouv", shell_output("#{bin}/${CLI_NAME} --help")
   end
 end
 EOF

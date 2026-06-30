@@ -50,20 +50,20 @@ jobs:
         run: uv run pyinstaller packaging/pyinstaller/datagouv.spec --clean --noconfirm
 
       - name: Smoke test
-        run: ./scripts/smoke-test-binary.sh ./dist/datagouv
+        run: ./scripts/smoke-test-binary.sh ./dist/datagouv-cli
 
       - name: Rename binary
         run: |
-          cp dist/datagouv "dist/datagouv-${{ matrix.suffix }}"
-          sha256sum "dist/datagouv-${{ matrix.suffix }}" > "dist/datagouv-${{ matrix.suffix }}.sha256"
+          cp dist/datagouv-cli "dist/datagouv-cli-${{ matrix.suffix }}"
+          sha256sum "dist/datagouv-cli-${{ matrix.suffix }}" > "dist/datagouv-cli-${{ matrix.suffix }}.sha256"
 
       - name: Upload artifact
         uses: actions/upload-artifact@v4
         with:
-          name: datagouv-${{ matrix.suffix }}
+          name: datagouv-cli-${{ matrix.suffix }}
           path: |
-            dist/datagouv-${{ matrix.suffix }}
-            dist/datagouv-${{ matrix.suffix }}.sha256
+            dist/datagouv-cli-${{ matrix.suffix }}
+            dist/datagouv-cli-${{ matrix.suffix }}.sha256
 
   release:
     name: Publish release and packages
@@ -106,7 +106,7 @@ jobs:
           for arch_pair in amd64:linux-amd64 arm64:linux-arm64; do
             deb_arch="${arch_pair%%:*}"
             suffix="${arch_pair##*:}"
-            binary="artifacts/datagouv-${suffix}"
+            binary="artifacts/datagouv-cli-${suffix}"
             if [[ ! -f "${binary}" ]]; then
               echo "Missing binary: ${binary}" >&2
               exit 1

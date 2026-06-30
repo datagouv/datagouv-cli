@@ -10,11 +10,11 @@ readme = "README.md"
 keywords = ["cli", "datagouv", "data.gouv.fr"]
 
 [project.urls]
-Source = "https://github.com/datagouv/datagouv_cli"
+Source = "https://github.com/datagouv/datagouv-cli"
 Library = "https://github.com/datagouv/datagouv_client"
 
 [project.scripts]
-datagouv = "datagouv.cli:app"
+datagouv-cli = "datagouv.cli:app"
 
 [dependency-groups]
 dev = [

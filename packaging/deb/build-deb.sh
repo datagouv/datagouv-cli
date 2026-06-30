@@ -7,7 +7,7 @@ DEB_ARCH="${3:?Usage: build-deb.sh <binary> <version> <deb-arch>}"
 
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 OUTPUT_DIR="${SCRIPT_DIR}"
-PACKAGE_NAME="datagouv"
+PACKAGE_NAME="datagouv-cli"
 OUTPUT_FILE="${OUTPUT_DIR}/${PACKAGE_NAME}_${VERSION}_${DEB_ARCH}.deb"
 
 if [[ ! -f "${BINARY}" ]]; then
@@ -29,12 +29,12 @@ fpm \
   --architecture "${DEB_ARCH}" \
   --maintainer "data.gouv.fr <opendatateam@data.gouv.fr>" \
   --description "CLI for data.gouv.fr" \
-  --url "https://github.com/datagouv/datagouv_cli" \
+  --url "https://github.com/datagouv/datagouv-cli" \
   --license MIT \
   --category utils \
   --deb-no-default-config-files \
   --package "${OUTPUT_FILE}" \
-  "${BINARY}=/usr/local/bin/datagouv"
+  "${BINARY}=/usr/local/bin/datagouv-cli"
 
 rm -f "${CONTROL_FILE}"
 

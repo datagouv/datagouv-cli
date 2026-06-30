@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
-BINARY="${1:-./dist/datagouv}"
+BINARY="${1:-./dist/datagouv-cli}"
 
 if [[ ! -x "$BINARY" ]]; then
   echo "Binary not found or not executable: $BINARY" >&2

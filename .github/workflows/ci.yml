@@ -51,4 +51,4 @@ jobs:
         run: uv run pyinstaller packaging/pyinstaller/datagouv.spec --clean --noconfirm
 
       - name: Smoke test
-        run: ./scripts/smoke-test-binary.sh ./dist/datagouv
+        run: ./scripts/smoke-test-binary.sh ./dist/datagouv-cli

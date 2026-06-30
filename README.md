@@ -9,33 +9,33 @@ This repository packages the CLI from [`datagouv_client`](https://github.com/dat
 ### APT (Debian / Ubuntu)
 
 ```bash
-curl -fsSL https://raw.githubusercontent.com/datagouv/datagouv_cli/main/scripts/install.sh | bash
+curl -fsSL https://raw.githubusercontent.com/datagouv/datagouv-cli/main/scripts/install.sh | bash
 ```
 
 Or manually:
 
 ```bash
 sudo mkdir -p /etc/apt/keyrings
-curl -fsSL https://datagouv.github.io/datagouv_cli/datagouv.gpg \
-  | sudo gpg --dearmor -o /etc/apt/keyrings/datagouv.gpg
-echo "deb [signed-by=/etc/apt/keyrings/datagouv.gpg] https://datagouv.github.io/datagouv_cli stable main" \
-  | sudo tee /etc/apt/sources.list.d/datagouv.list
-sudo apt update && sudo apt install datagouv
+curl -fsSL https://datagouv.github.io/datagouv-cli/datagouv-cli.gpg \
+  | sudo gpg --dearmor -o /etc/apt/keyrings/datagouv-cli.gpg
+echo "deb [signed-by=/etc/apt/keyrings/datagouv-cli.gpg] https://datagouv.github.io/datagouv-cli stable main" \
+  | sudo tee /etc/apt/sources.list.d/datagouv-cli.list
+sudo apt update && sudo apt install datagouv-cli
 ```
 
 ### Homebrew (macOS)
 
 ```bash
-brew install datagouv/tap/datagouv
+brew install datagouv/tap/datagouv-cli
 ```
 
 ### Manual binary
 
-Download the binary for your platform from [GitHub Releases](https://github.com/datagouv/datagouv_cli/releases), make it executable, and place it on your `PATH`:
+Download the binary for your platform from [GitHub Releases](https://github.com/datagouv/datagouv-cli/releases), make it executable, and place it on your `PATH`:
 
 ```bash
-chmod +x datagouv-linux-amd64
-sudo mv datagouv-linux-amd64 /usr/local/bin/datagouv
+chmod +x datagouv-cli-linux-amd64
+sudo mv datagouv-cli-linux-amd64 /usr/local/bin/datagouv-cli
 ```
 
 ## Usage
@@ -45,8 +45,8 @@ See the [datagouv_client CLI documentation](https://github.com/datagouv/datagouv
 Quick start:
 
 ```bash
-datagouv setup
-datagouv dataset get <dataset-id>
+datagouv-cli setup
+datagouv-cli dataset get <dataset-id>
 ```
 
 ## Development
@@ -55,7 +55,7 @@ Requirements: [uv](https://docs.astral.sh/uv/), Python 3.10+.
 
 ```bash
 uv sync --dev
-uv run datagouv --help
+uv run datagouv-cli --help
 uv run pytest
 uv run ruff check .
 ```
@@ -64,7 +64,7 @@ Build a local binary:
 
 ```bash
 uv run pyinstaller packaging/pyinstaller/datagouv.spec
-./dist/datagouv --help
+./dist/datagouv-cli --help
 ```
 
 ## Releasing

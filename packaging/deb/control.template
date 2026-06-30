@@ -1,4 +1,4 @@
-Package: datagouv
+Package: datagouv-cli
 Version: @VERSION@
 Section: utils
 Priority: optional
@@ -6,4 +6,4 @@ Architecture: @ARCH@
 Maintainer: data.gouv.fr <opendatateam@data.gouv.fr>
 Description: CLI for data.gouv.fr
  Standalone command-line interface for interacting with the data.gouv.fr API.
-Homepage: https://github.com/datagouv/datagouv_cli
+Homepage: https://github.com/datagouv/datagouv-cli
