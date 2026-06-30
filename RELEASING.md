@@ -10,10 +10,16 @@ The build resolves `datagouv-client` from **PyPI** (see `pyproject.toml`). CI do
 
 Current constraint: `datagouv-client>=0.4.0,<0.5.0` (PyPI **0.4.x**, library-only; CLI code lives in this repo).
 
-When a new **`datagouv-client`** version is published on PyPI:
+When a new **`datagouv-client`** version is published on PyPI, update **this repo** (`datagouv-cli`) to pick it up:
 
-1. Run `uv lock --upgrade-package datagouv-client && uv sync --dev && uv run pytest`.
-2. Tag a new CLI release if needed.
+```bash
+uv lock --upgrade-package datagouv-client
+uv run pytest
+git add uv.lock
+git commit -m "chore: bump datagouv-client to X.Y.Z"
+```
+
+If the constraint range in `pyproject.toml` also changes, include that file in the commit. Then cut a new CLI release if you want users to get the updated library.
 
 ## Prerequisites
 
@@ -30,35 +36,28 @@ Export the public GPG key to the APT repo root as `datagouv-cli.gpg` during rele
 
 Bootstrap the Homebrew tap from [`homebrew-tap/`](homebrew-tap/README.md).
 
-## Bump embedded library version
-
-When `datagouv_client` releases a new version on PyPI:
-
-```bash
-uv lock --upgrade-package datagouv-client
-uv sync --dev
-uv run pytest
-uv run datagouv-cli --help
-git add pyproject.toml uv.lock
-git commit -m "chore: bump datagouv-client to X.Y.Z"
-```
-
 ## Cut a release
 
-1. Update [`CHANGELOG.md`](CHANGELOG.md).
-2. Tag the release:
+Releases are fully handled by CI. Pushing a version tag on `main` triggers [`release.yml`](.github/workflows/release.yml).
+
+The version in `pyproject.toml` is derived from git tags via `setuptools_scm` — no manual edit needed.
+
+1. Update [`CHANGELOG.md`](CHANGELOG.md) on `main` (summarize changes since the last release).
+2. Commit and push to `main`.
+3. Create and push an annotated tag:
 
 ```bash
-git tag vX.Y.Z
+git tag -a vX.Y.Z -m "Version X.Y.Z"
 git push origin vX.Y.Z
 ```
 
-3. The [`release.yml`](.github/workflows/release.yml) workflow will:
-   - Build binaries for Linux (amd64, arm64) and macOS (amd64, arm64)
-   - Create a GitHub Release with checksums
-   - Build `.deb` packages
-   - Publish the APT repository to GitHub Pages
-   - Update the Homebrew tap formula
+The workflow then:
+
+- Builds binaries for Linux (amd64, arm64) and macOS (amd64, arm64)
+- Creates a GitHub Release with auto-generated notes and uploads assets with checksums
+- Builds `.deb` packages
+- Publishes the APT repository to GitHub Pages
+- Updates the Homebrew tap formula
 
 ## Verify a release
 
