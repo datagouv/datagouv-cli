@@ -39,12 +39,6 @@ jobs:
         with:
           fetch-depth: 0
 
-      - uses: actions/checkout@v4
-        with:
-          repository: datagouv/datagouv_client
-          path: datagouv_client
-          fetch-depth: 0
-
       - uses: astral-sh/setup-uv@v6
         with:
           enable-cache: true

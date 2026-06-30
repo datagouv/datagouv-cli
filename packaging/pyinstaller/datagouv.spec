@@ -7,11 +7,6 @@ from PyInstaller.utils.hooks import collect_all, collect_submodules
 
 block_cipher = None
 project_root = Path(SPECPATH).resolve().parent.parent
-client_root = project_root.parent / "datagouv_client"
-
-pathex = [str(project_root)]
-if client_root.is_dir():
-    pathex.append(str(client_root))
 
 hiddenimports = collect_submodules("datagouv_cli")
 hiddenimports += collect_submodules("datagouv")
@@ -21,6 +16,11 @@ hiddenimports += [
     "shellingham",
     "tenacity",
     "niquests",
+    "urllib3_future",
+    "jh2",
+    "qh3",
+    "wassima",
+    "charset_normalizer",
 ]
 
 datas = []
@@ -33,14 +33,19 @@ for package in ("datagouv", "datagouv_cli"):
 
 a = Analysis(
     [str(project_root / "datagouv_cli" / "__main__.py")],
-    pathex=pathex,
+    pathex=[str(project_root)],
     binaries=binaries,
     datas=datas,
     hiddenimports=hiddenimports,
     hookspath=[],
     hooksconfig={},
     runtime_hooks=[],
-    excludes=[],
+    excludes=[
+        "datagouv.cli",
+        "datagouv.commands",
+        "datagouv.config",
+        "datagouv._cli_shim",
+    ],
     win_no_prefer_redirects=False,
     win_private_assemblies=False,
     cipher=block_cipher,

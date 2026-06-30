@@ -151,7 +151,7 @@ dev = [
 
 [package.metadata]
 requires-dist = [
-    { name = "datagouv-client", editable = "../datagouv_client" },
+    { name = "datagouv-client", specifier = ">=0.4.0,<0.5.0" },
     { name = "typer", specifier = ">=0.25.0,<1" },
 ]
 
@@ -164,23 +164,15 @@ dev = [
 
 [[package]]
 name = "datagouv-client"
-source = { editable = "../datagouv_client" }
+version = "0.4.0"
+source = { registry = "https://pypi.org/simple" }
 dependencies = [
     { name = "niquests" },
     { name = "tenacity" },
+    { name = "typer" },
 ]
-
-[package.metadata]
-requires-dist = [
-    { name = "niquests", specifier = ">=3.19.0,<4" },
-    { name = "tenacity", specifier = ">=9.0.0,<10" },
-]
-
-[package.metadata.requires-dev]
-dev = [
-    { name = "niquests-mock", specifier = ">=0.4.0,<1" },
-    { name = "pytest", specifier = ">=8.0.0,<9" },
-    { name = "ruff", specifier = ">=0.11.2" },
+wheels = [
+    { url = "https://files.pythonhosted.org/packages/15/58/76daab964ae81310a84ad7dec506d76d848ad012677c75974ba98afa6da7/datagouv_client-0.4.0-py3-none-any.whl", hash = "sha256:ebdb2c4c0f17bea7de7435fdebec96816ef7cf5e1429833c099bb30be8e6f888", size = 27384, upload-time = "2026-06-24T18:05:56.217Z" },
 ]
 
 [[package]]

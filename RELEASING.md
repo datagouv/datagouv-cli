@@ -4,35 +4,16 @@ This document describes how to publish a new version of the standalone CLI distr
 
 `datagouv-cli` is **not published on PyPI**. Users install it via apt, Homebrew, or GitHub Release binaries.
 
-## Coordinated release with datagouv_client
+The build resolves `datagouv-client` from **PyPI** (see `pyproject.toml`). CI does not clone `datagouv_client`.
 
-The CLI depends on `datagouv-client>=0.4.0` (library without embedded CLI). Release in this order:
+## Library dependency
 
-1. Merge and publish **`datagouv_client` v0.4.0** on PyPI (lib only + deprecation shim for `datagouv` command).
-2. Bump `datagouv-client` in this repo: `uv lock --upgrade-package datagouv-client`.
-3. Remove `[tool.uv.sources]` path override from `pyproject.toml` once PyPI has 0.4.0.
-4. Tag **`datagouv_cli` v0.4.0** to build and publish binaries.
+Current constraint: `datagouv-client>=0.4.0,<0.5.0` (PyPI **0.4.x**, library-only; CLI code lives in this repo).
 
-### Release checklist
+When a new **`datagouv-client`** version is published on PyPI:
 
-```bash
-# 1. datagouv_client — merge PR, then tag and publish
-cd datagouv_client
-./tag_version.sh 0.4.0   # or your release process
-# verify PyPI: pip index versions datagouv-client
-
-# 2. datagouv_cli — drop path override once PyPI has 0.4.0
-cd ../datagouv_cli
-# remove [tool.uv.sources] from pyproject.toml
-uv lock --upgrade-package datagouv-client
-uv sync --dev
-uv run pytest
-uv run pyinstaller packaging/pyinstaller/datagouv.spec --clean --noconfirm
-./scripts/smoke-test-binary.sh ./dist/datagouv-cli
-
-# 3. tag CLI release
-git tag v0.4.0 && git push origin v0.4.0
-```
+1. Run `uv lock --upgrade-package datagouv-client && uv sync --dev && uv run pytest`.
+2. Tag a new CLI release if needed.
 
 ## Prerequisites
 
@@ -51,7 +32,7 @@ Bootstrap the Homebrew tap from [`homebrew-tap/`](homebrew-tap/README.md).
 
 ## Bump embedded library version
 
-When `datagouv_client` releases a new version:
+When `datagouv_client` releases a new version on PyPI:
 
 ```bash
 uv lock --upgrade-package datagouv-client
@@ -109,3 +90,13 @@ brew upgrade datagouv-cli
 - **PyInstaller build fails in CI**: check hidden imports in [`packaging/pyinstaller/datagouv.spec`](packaging/pyinstaller/datagouv.spec).
 - **APT install fails**: verify GitHub Pages deployment and that `datagouv-cli.gpg` is present.
 - **Homebrew tap not updated**: verify `HOMEBREW_TAP_TOKEN` and that the tap repository exists.
+
+## Local development against unreleased library changes
+
+By default, `uv` pulls `datagouv-client` from PyPI. To test against a local checkout:
+
+```bash
+uv add --editable ../datagouv_client
+```
+
+Revert before release unless you intentionally pin a git/path source.

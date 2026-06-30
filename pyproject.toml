@@ -19,9 +19,6 @@ Library = "https://github.com/datagouv/datagouv_client"
 [project.scripts]
 datagouv-cli = "datagouv_cli.cli:app"
 
-[tool.uv.sources]
-datagouv-client = { path = "../datagouv_client", editable = true }
-
 [dependency-groups]
 dev = [
     "pyinstaller>=6.0.0",
