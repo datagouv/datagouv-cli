@@ -1,0 +1,48 @@
+# Backup files
+*.txt~
+*.py~
+
+# Byte-compiled / optimized / DLL files
+*.pyc
+__pycache__/
+
+# IDEs and editors
+.vscode
+.spyderproject
+
+# Git backup files
+.gitignore~
+
+# Build and distribution
+build/
+dist/
+*.egg-info/
+*.spec.bak
+
+# PyInstaller
+*.manifest
+
+# Packaging artifacts
+packaging/deb/*.deb
+packaging/apt/incoming/
+packaging/apt/dists/
+packaging/apt/reprepro/
+
+# MacOS system files
+.DS_Store
+
+# Python environments
+venv/
+.venv/
+
+# Python package managers
+.python-version
+pdm.lock
+
+# Code quality tools
+.ruff_cache/
+.pytest_cache/
+.mypy_cache/
+
+# Project specific files
+mise.local.toml

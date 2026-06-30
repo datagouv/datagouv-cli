@@ -1,0 +1,158 @@
+name: Release
+
+on:
+  push:
+    tags:
+      - "v*"
+
+permissions:
+  contents: write
+  pages: write
+  id-token: write
+
+concurrency:
+  group: release-${{ github.ref }}
+  cancel-in-progress: false
+
+env:
+  APT_REPO_CODENAME: stable
+  APT_REPO_COMPONENT: main
+
+jobs:
+  build:
+    name: Build ${{ matrix.suffix }}
+    runs-on: ${{ matrix.os }}
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - os: ubuntu-latest
+            suffix: linux-amd64
+          - os: ubuntu-24.04-arm
+            suffix: linux-arm64
+          - os: macos-latest
+            suffix: macos-arm64
+          - os: macos-15-intel
+            suffix: macos-amd64
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - uses: astral-sh/setup-uv@v6
+        with:
+          enable-cache: true
+
+      - name: Install dependencies
+        run: uv sync --dev
+
+      - name: Build binary
+        run: uv run pyinstaller packaging/pyinstaller/datagouv.spec --clean --noconfirm
+
+      - name: Smoke test
+        run: ./scripts/smoke-test-binary.sh ./dist/datagouv
+
+      - name: Rename binary
+        run: |
+          cp dist/datagouv "dist/datagouv-${{ matrix.suffix }}"
+          sha256sum "dist/datagouv-${{ matrix.suffix }}" > "dist/datagouv-${{ matrix.suffix }}.sha256"
+
+      - name: Upload artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: datagouv-${{ matrix.suffix }}
+          path: |
+            dist/datagouv-${{ matrix.suffix }}
+            dist/datagouv-${{ matrix.suffix }}.sha256
+
+  release:
+    name: Publish release and packages
+    needs: build
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Download all artifacts
+        uses: actions/download-artifact@v4
+        with:
+          path: artifacts
+          merge-multiple: true
+
+      - name: List artifacts
+        run: find artifacts -type f | sort
+
+      - name: Install packaging tools
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y reprepro gnupg ruby ruby-dev rubygems
+          sudo gem install --no-document fpm
+
+      - name: Import APT signing key
+        env:
+          APT_GPG_PRIVATE_KEY: ${{ secrets.APT_GPG_PRIVATE_KEY }}
+        run: |
+          if [[ -z "${APT_GPG_PRIVATE_KEY}" ]]; then
+            echo "APT_GPG_PRIVATE_KEY secret is not configured; skipping GPG import." >&2
+            exit 0
+          fi
+          echo "${APT_GPG_PRIVATE_KEY}" | gpg --batch --import
+
+      - name: Build Debian packages
+        run: |
+          VERSION="${GITHUB_REF_NAME#v}"
+          mkdir -p packaging/deb
+          for arch_pair in amd64:linux-amd64 arm64:linux-arm64; do
+            deb_arch="${arch_pair%%:*}"
+            suffix="${arch_pair##*:}"
+            binary="artifacts/datagouv-${suffix}"
+            if [[ ! -f "${binary}" ]]; then
+              echo "Missing binary: ${binary}" >&2
+              exit 1
+            fi
+            packaging/deb/build-deb.sh "${binary}" "${VERSION}" "${deb_arch}"
+          done
+
+      - name: Publish APT repository
+        env:
+          APT_GPG_PRIVATE_KEY: ${{ secrets.APT_GPG_PRIVATE_KEY }}
+        run: packaging/apt/publish-repo.sh "${GITHUB_REF_NAME#v}"
+
+      - name: Create GitHub Release
+        uses: softprops/action-gh-release@v2
+        with:
+          files: |
+            artifacts/*
+            packaging/deb/*.deb
+            packaging/deb/*.sha256
+          generate_release_notes: true
+
+      - name: Generate Homebrew formula
+        run: |
+          VERSION="${GITHUB_REF_NAME#v}"
+          mkdir -p packaging/brew/generated
+          packaging/brew/generate-formula.sh "${VERSION}" artifacts packaging/brew/generated
+
+      - name: Update Homebrew tap
+        env:
+          HOMEBREW_TAP_TOKEN: ${{ secrets.HOMEBREW_TAP_TOKEN }}
+          HOMEBREW_TAP_REPO: ${{ vars.HOMEBREW_TAP_REPO }}
+        run: packaging/brew/update-tap.sh "${GITHUB_REF_NAME#v}" packaging/brew/generated
+
+      - name: Upload APT repository to GitHub Pages
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: packaging/apt/gh-pages
+
+  deploy-apt-pages:
+    name: Deploy APT repository
+    needs: release
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v4

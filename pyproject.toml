@@ -1,0 +1,43 @@
+[project]
+name = "datagouv-cli"
+dynamic = ["version"]
+description = "Standalone CLI binary distribution for data.gouv.fr"
+authors = [{ name = "data.gouv.fr", email = "opendatateam@data.gouv.fr" }]
+dependencies = ["datagouv-client>=0.3.0,<0.4.0"]
+requires-python = ">=3.10,<3.15"
+license = "MIT"
+readme = "README.md"
+keywords = ["cli", "datagouv", "data.gouv.fr"]
+
+[project.urls]
+Source = "https://github.com/datagouv/datagouv_cli"
+Library = "https://github.com/datagouv/datagouv_client"
+
+[project.scripts]
+datagouv = "datagouv.cli:app"
+
+[dependency-groups]
+dev = [
+    "pyinstaller>=6.0.0",
+    "pytest>=8.0.0,<9",
+    "ruff>=0.11.2",
+]
+
+[build-system]
+requires = ["setuptools>=68", "wheel", "setuptools_scm"]
+build-backend = "setuptools.build_meta"
+
+[tool.setuptools.packages.find]
+where = ["."]
+include = ["datagouv_cli*"]
+
+[tool.setuptools_scm]
+version_scheme = "guess-next-dev"
+local_scheme = "no-local-version"
+
+[tool.pytest.ini_options]
+pythonpath = ["."]
+
+[tool.ruff]
+lint = { extend-select = ["I"] }
+line-length = 100
