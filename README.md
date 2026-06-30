@@ -39,11 +39,20 @@ chmod +x datagouv-cli-linux-amd64
 sudo mv datagouv-cli-linux-amd64 /usr/local/bin/datagouv-cli
 ```
 
+## Quick start
+
+```bash
+datagouv-cli setup
+datagouv-cli dataset get <dataset-id>
+```
+
 ## 🖥️ CLI
 
 ```bash
 datagouv-cli --help
 ```
+
+### Configuration
 
 First set up your config:
 
@@ -55,43 +64,54 @@ You will be asked the environment you want to interact with, and your API key. T
 
 > Note: you may skip this setup step if you intend to target the production platform and fetch data.
 
+To reset your settings, delete the config file with `datagouv-cli delete-config`.
+
 ### Displaying data
 
 All objects have a `display` command that shows the object's main metadata in a human-readable way:
 
 ```bash
-datagouv-cli organization display "534fff81a3a7292c64a77e5c"
+datagouv organization display "534fff81a3a7292c64a77e5c"
+> badges: [{'kind': 'public-service'}, {'kind': 'certified'}]
+> ────────────────────
+> business_number_id: 12002701600563
+> ────────────────────
+> created_at: 2014-04-17T18:21:21.523000+00:00
+> ...
 ```
 
 ### Getting data
 
-All objects also have a `get` command that outputs metadata in JSON:
+All objects also have a `get` command, that outputs all the object's metadata in JSON (directly fed from datagouv's API). You may for instance give the output to `jq` like:
 
 ```bash
-datagouv-cli organization get "534fff81a3a7292c64a77e5c" | jq .name
+datagouv organization get "534fff81a3a7292c64a77e5c" | jq .name
+> "Institut national de la statistique et des études économiques (Insee)
 ```
 
 ### Modifying objects
 
-If you have run `setup` and filled in your API key, you may interact with objects (according to your rights on the platform):
+If you have run the `setup` command and filled in your API key, you may interact with objects (according to your rights on the platform), for instance:
 
 ```bash
-datagouv-cli dataset create --title "New dataset" --description "Nice description" --organization-id "646b7187b50b2a93b1ae3d45"
-datagouv-cli dataset update "69fb46c2bdeef492539acd61" --set title="New title" --set private=true
-datagouv-cli resource create "69fb46c2bdeef492539acd61" "First resource" --file-to-upload file.csv --set type=main
-datagouv-cli resource delete "49e370df-cd09-4792-915b-95d25c2adc08"
+datagouv dataset create --title "New dataset" --description "Nice description" --organization_id "646b7187b50b2a93b1ae3d45"
+> Dataset created successfully ✓ id is 69fb46c2bdeef492539acd61
+# use the `--set` argument to update keys (can be used multiple times in one call)
+datagouv dataset update "69fb46c2bdeef492539acd61" --set title="New title" --set private=true
+> Dataset updated successfully ✓
+datagouv resource create "69fb46c2bdeef492539acd61" "First resource" --file-to-upload file.csv --set type=main
+> Resource created successfully ✓ id is 49e370df-cd09-4792-915b-95d25c2adc08
+datagouv resource delete "49e370df-cd09-4792-915b-95d25c2adc08"
+> Resource deleted successfully ✓
 ```
 
-The `--help` command is available for all subcommands. Delete your config file with `datagouv-cli delete-config`.
+### Help
 
-For Python library usage, see [`datagouv_client`](https://github.com/datagouv/datagouv_client).
+The `--help` flag is available for all subcommands.
 
-Quick start:
+## Python library
 
-```bash
-datagouv-cli setup
-datagouv-cli dataset get <dataset-id>
-```
+For programmatic access to the data.gouv.fr API, see [`datagouv_client`](https://github.com/datagouv/datagouv_client).
 
 ## 🛠️ Development
 
