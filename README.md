@@ -1,18 +1,16 @@
 # datagouv-cli
 
-Standalone binary distribution of the [data.gouv.fr CLI](https://github.com/datagouv/datagouv_client).
+Command-line tool for [data.gouv.fr](https://www.data.gouv.fr): work with datasets, organizations, resources, and topics from your terminal.
 
-This repository packages the CLI from [`datagouv_client`](https://github.com/datagouv/datagouv_client) as installable binaries for Linux and macOS. For Python library usage, install [`datagouv-client`](https://pypi.org/project/datagouv-client/) from PyPI instead.
+Install it on Linux or macOS with the command below — no other dependency required.
 
 ## Installation
-
-### APT (Debian / Ubuntu)
 
 ```bash
 curl -fsSL https://raw.githubusercontent.com/datagouv/datagouv-cli/main/scripts/install.sh | bash
 ```
 
-Or manually:
+### Manual APT (Debian / Ubuntu)
 
 ```bash
 sudo mkdir -p /etc/apt/keyrings
@@ -23,7 +21,7 @@ echo "deb [signed-by=/etc/apt/keyrings/datagouv-cli.gpg] https://datagouv.github
 sudo apt update && sudo apt install datagouv-cli
 ```
 
-### Homebrew (macOS)
+### Manual Homebrew (macOS)
 
 ```bash
 brew install datagouv/tap/datagouv-cli
@@ -40,7 +38,9 @@ sudo mv datagouv-cli-linux-amd64 /usr/local/bin/datagouv-cli
 
 ## Usage
 
-See the [datagouv_client CLI documentation](https://github.com/datagouv/datagouv_client#-cli).
+```bash
+datagouv-cli --help
+```
 
 Quick start:
 
