@@ -9,7 +9,7 @@ app = typer.Typer()
 
 @app.command()
 def display(id: str) -> None:
-    """Human-friendlily display a dataset's attributes."""
+    """Human-friendly display a dataset's attributes."""
     client = Client(**load_config())
     dataset = client.dataset(id)
     for att in dataset._attributes:

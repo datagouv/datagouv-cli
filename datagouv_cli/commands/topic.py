@@ -9,7 +9,7 @@ app = typer.Typer()
 
 @app.command()
 def display(id: str) -> None:
-    """Human-friendlily display a topic's attributes."""
+    """Human-friendly display a topic's attributes."""
     client = Client(**load_config())
     topic = client.topic(id)
     for att in topic._attributes:

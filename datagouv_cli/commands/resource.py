@@ -9,7 +9,7 @@ app = typer.Typer()
 
 @app.command()
 def display(id: str) -> None:
-    """Human-friendlily display a resource's attributes."""
+    """Human-friendly display a resource's attributes."""
     client = Client(**load_config())
     resource = client.resource(id)
     for att in resource._attributes:

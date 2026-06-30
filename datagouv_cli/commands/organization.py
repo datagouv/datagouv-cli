@@ -9,7 +9,7 @@ app = typer.Typer()
 
 @app.command()
 def display(id: str) -> None:
-    """Human-friendlily display an organization's attributes."""
+    """Human-friendly display an organization's attributes."""
     client = Client(**load_config())
     orga = client.organization(id)
     for att in orga._attributes:
