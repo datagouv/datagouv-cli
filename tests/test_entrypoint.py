@@ -1,5 +1,6 @@
 import typer
-from datagouv.cli import app
+
+from datagouv_cli.cli import app
 
 
 def test_app_is_typer_instance() -> None:

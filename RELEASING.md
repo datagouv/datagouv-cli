@@ -2,6 +2,38 @@
 
 This document describes how to publish a new version of the standalone CLI distribution.
 
+`datagouv-cli` is **not published on PyPI**. Users install it via apt, Homebrew, or GitHub Release binaries.
+
+## Coordinated release with datagouv_client
+
+The CLI depends on `datagouv-client>=0.4.0` (library without embedded CLI). Release in this order:
+
+1. Merge and publish **`datagouv_client` v0.4.0** on PyPI (lib only + deprecation shim for `datagouv` command).
+2. Bump `datagouv-client` in this repo: `uv lock --upgrade-package datagouv-client`.
+3. Remove `[tool.uv.sources]` path override from `pyproject.toml` once PyPI has 0.4.0.
+4. Tag **`datagouv_cli` v0.4.0** to build and publish binaries.
+
+### Release checklist
+
+```bash
+# 1. datagouv_client — merge PR, then tag and publish
+cd datagouv_client
+./tag_version.sh 0.4.0   # or your release process
+# verify PyPI: pip index versions datagouv-client
+
+# 2. datagouv_cli — drop path override once PyPI has 0.4.0
+cd ../datagouv_cli
+# remove [tool.uv.sources] from pyproject.toml
+uv lock --upgrade-package datagouv-client
+uv sync --dev
+uv run pytest
+uv run pyinstaller packaging/pyinstaller/datagouv.spec --clean --noconfirm
+./scripts/smoke-test-binary.sh ./dist/datagouv-cli
+
+# 3. tag CLI release
+git tag v0.4.0 && git push origin v0.4.0
+```
+
 ## Prerequisites
 
 Configure these GitHub repository settings once:

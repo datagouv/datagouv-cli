@@ -3,41 +3,40 @@
 
 from pathlib import Path
 
+from PyInstaller.utils.hooks import collect_all, collect_submodules
+
 block_cipher = None
 project_root = Path(SPECPATH).resolve().parent.parent
+client_root = project_root.parent / "datagouv_client"
+
+pathex = [str(project_root)]
+if client_root.is_dir():
+    pathex.append(str(client_root))
+
+hiddenimports = collect_submodules("datagouv_cli")
+hiddenimports += collect_submodules("datagouv")
+hiddenimports += [
+    "typer",
+    "rich",
+    "shellingham",
+    "tenacity",
+    "niquests",
+]
+
+datas = []
+binaries = []
+for package in ("datagouv", "datagouv_cli"):
+    pkg_datas, pkg_binaries, pkg_hiddenimports = collect_all(package)
+    datas += pkg_datas
+    binaries += pkg_binaries
+    hiddenimports += pkg_hiddenimports
 
 a = Analysis(
     [str(project_root / "datagouv_cli" / "__main__.py")],
-    pathex=[str(project_root)],
-    binaries=[],
-    datas=[],
-    hiddenimports=[
-        "datagouv",
-        "datagouv.cli",
-        "datagouv.commands",
-        "datagouv.commands.dataset",
-        "datagouv.commands.organization",
-        "datagouv.commands.resource",
-        "datagouv.commands.topic",
-        "datagouv.commands.utils",
-        "datagouv.config",
-        "datagouv.api.client",
-        "datagouv.api.dataset",
-        "datagouv.api.organization",
-        "datagouv.api.resource",
-        "datagouv.api.topic",
-        "datagouv.utils.base_object",
-        "datagouv.utils.retry",
-        "typer",
-        "rich",
-        "click",
-        "shellingham",
-        "httpx",
-        "httpcore",
-        "anyio",
-        "certifi",
-        "tenacity",
-    ],
+    pathex=pathex,
+    binaries=binaries,
+    datas=datas,
+    hiddenimports=hiddenimports,
     hookspath=[],
     hooksconfig={},
     runtime_hooks=[],

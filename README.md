@@ -42,6 +42,47 @@ sudo mv datagouv-cli-linux-amd64 /usr/local/bin/datagouv-cli
 datagouv-cli --help
 ```
 
+First set up your config:
+
+```bash
+datagouv-cli setup
+```
+
+You will be asked the environment you want to interact with, and your API key. They will be stored in a config file in your home directory. If you only intend to get data, you may leave the API key blank.
+
+> Note: you may skip this setup step if you intend to target the production platform and fetch data.
+
+### Displaying data
+
+All objects have a `display` command that shows the object's main metadata in a human-readable way:
+
+```bash
+datagouv-cli organization display "534fff81a3a7292c64a77e5c"
+```
+
+### Getting data
+
+All objects also have a `get` command that outputs metadata in JSON:
+
+```bash
+datagouv-cli organization get "534fff81a3a7292c64a77e5c" | jq .name
+```
+
+### Modifying objects
+
+If you have run `setup` and filled in your API key, you may interact with objects (according to your rights on the platform):
+
+```bash
+datagouv-cli dataset create --title "New dataset" --description "Nice description" --organization-id "646b7187b50b2a93b1ae3d45"
+datagouv-cli dataset update "69fb46c2bdeef492539acd61" --set title="New title" --set private=true
+datagouv-cli resource create "69fb46c2bdeef492539acd61" "First resource" --file-to-upload file.csv --set type=main
+datagouv-cli resource delete "49e370df-cd09-4792-915b-95d25c2adc08"
+```
+
+The `--help` command is available for all subcommands. Delete your config file with `datagouv-cli delete-config`.
+
+For Python library usage, see [`datagouv_client`](https://github.com/datagouv/datagouv_client).
+
 Quick start:
 
 ```bash

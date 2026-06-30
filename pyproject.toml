@@ -3,7 +3,10 @@ name = "datagouv-cli"
 dynamic = ["version"]
 description = "Standalone CLI binary distribution for data.gouv.fr"
 authors = [{ name = "data.gouv.fr", email = "opendatateam@data.gouv.fr" }]
-dependencies = ["datagouv-client>=0.3.0,<0.4.0"]
+dependencies = [
+    "datagouv-client>=0.4.0,<0.5.0",
+    "typer>=0.25.0,<1",
+]
 requires-python = ">=3.10,<3.15"
 license = "MIT"
 readme = "README.md"
@@ -14,7 +17,10 @@ Source = "https://github.com/datagouv/datagouv-cli"
 Library = "https://github.com/datagouv/datagouv_client"
 
 [project.scripts]
-datagouv-cli = "datagouv.cli:app"
+datagouv-cli = "datagouv_cli.cli:app"
+
+[tool.uv.sources]
+datagouv-client = { path = "../datagouv_client", editable = true }
 
 [dependency-groups]
 dev = [
