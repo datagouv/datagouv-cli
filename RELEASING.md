@@ -8,7 +8,7 @@ The build resolves `datagouv-client` from **PyPI** (see `pyproject.toml`). CI do
 
 ## Library dependency
 
-Current constraint: `datagouv-client>=0.4.0,<0.5.0` (PyPI **0.4.x**, library-only; CLI code lives in this repo).
+Current constraint: `datagouv-client>=0.5.0,<0.6.0` (PyPI **0.5.x**, library-only; CLI code lives in this repo).
 
 When a new **`datagouv-client`** version is published on PyPI, update **this repo** (`datagouv-cli`) to pick it up:
 
