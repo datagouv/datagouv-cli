@@ -1,10 +1,13 @@
 # datagouv-cli
 
-Command-line tool for [data.gouv.fr](https://www.data.gouv.fr): work with datasets, organizations, resources, and topics from your terminal.
+[![CI](https://github.com/datagouv/datagouv-cli/actions/workflows/ci.yml/badge.svg)](https://github.com/datagouv/datagouv-cli/actions/workflows/ci.yml)
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
+
+`datagouv-cli` is a command-line tool for [data.gouv.fr](https://www.data.gouv.fr): work with datasets, organizations, resources, and topics from your terminal.
 
 Install it on Linux or macOS with the command below — no other dependency required.
 
-## Installation
+## 🚀 Installation
 
 ```bash
 curl -fsSL https://raw.githubusercontent.com/datagouv/datagouv-cli/main/scripts/install.sh | bash
@@ -36,7 +39,7 @@ chmod +x datagouv-cli-linux-amd64
 sudo mv datagouv-cli-linux-amd64 /usr/local/bin/datagouv-cli
 ```
 
-## Usage
+## 🖥️ CLI
 
 ```bash
 datagouv-cli --help
@@ -90,15 +93,13 @@ datagouv-cli setup
 datagouv-cli dataset get <dataset-id>
 ```
 
-## Development
+## 🛠️ Development
 
-Requirements: [uv](https://docs.astral.sh/uv/), Python 3.10+.
+This project uses Python >=3.10,<3.15 and [uv](https://docs.astral.sh/uv/) to manage dependencies.
 
 ```bash
 uv sync --dev
 uv run datagouv-cli --help
-uv run pytest
-uv run ruff check .
 ```
 
 Build a local binary:
@@ -108,10 +109,20 @@ uv run pyinstaller packaging/pyinstaller/datagouv.spec
 ./dist/datagouv-cli --help
 ```
 
-## Releasing
+## 🤝 Contributing
+
+Before submitting a PR, lint and format the code with [Ruff](https://astral.sh/ruff/):
+
+```bash
+uv run ruff check --fix && uv run ruff format
+```
+
+Run the test suite:
+
+```bash
+uv run pytest
+```
+
+### 🏷️ Releases and versioning
 
 See [RELEASING.md](RELEASING.md).
-
-## License
-
-MIT — see [LICENSE](LICENSE).
