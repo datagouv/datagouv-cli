@@ -2,7 +2,7 @@
 <package xmlns="http://schemas.microsoft.com/packaging/2015/06/nuspec.xsd">
   <metadata>
     <id>datagouv-cli</id>
-    <version>0.2.1</version>
+    <version>0.3.0</version>
     <title>datagouv-cli</title>
     <authors>data.gouv.fr</authors>
     <projectUrl>https://github.com/datagouv/datagouv-cli</projectUrl>
