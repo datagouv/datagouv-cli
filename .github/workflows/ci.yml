@@ -26,8 +26,10 @@ jobs:
       - name: Install dependencies
         run: uv sync --dev
 
-      - name: Ruff
-        run: uv run ruff check .
+      - name: Lint and format the code
+        run: |
+          uv run ruff check .
+          uv run ruff format --check .
 
       - name: Pytest
         run: uv run pytest

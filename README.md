@@ -133,16 +133,16 @@ uv run pyinstaller packaging/pyinstaller/datagouv.spec
 
 ## 🤝 Contributing
 
-Before submitting a PR, lint and format the code with [Ruff](https://astral.sh/ruff/):
+Before contributing to the repository and making any PR, it is necessary to initialize the pre-commit hooks:
+```bash
+uv sync --dev
+uv run pre-commit install
+```
+Once this is done, code formatting and linting, as well as import sorting, will be automatically checked before each commit.
 
+If you cannot use pre-commit, it is necessary to format, lint, and sort imports with [Ruff](https://astral.sh/ruff/) for linting and formatting. **Either running these commands manually or installing the pre-commit hook is required before submitting contributions.**
 ```bash
 uv run ruff check --fix && uv run ruff format
-```
-
-Run the test suite:
-
-```bash
-uv run pytest
 ```
 
 ### 🏷️ Releases and versioning
