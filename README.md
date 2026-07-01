@@ -28,6 +28,7 @@ sudo apt update && sudo apt install datagouv-cli
 
 ```bash
 brew tap datagouv/datagouv-cli https://github.com/datagouv/datagouv-cli.git
+brew trust datagouv/datagouv-cli
 brew install datagouv-cli
 ```
 

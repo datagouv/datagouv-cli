@@ -34,6 +34,7 @@ The Homebrew formula lives in [`Formula/datagouv-cli.rb`](Formula/datagouv-cli.r
 
 ```bash
 brew tap datagouv/datagouv-cli https://github.com/datagouv/datagouv-cli.git
+brew trust datagouv/datagouv-cli
 brew install datagouv-cli
 ```
 
@@ -75,6 +76,7 @@ sudo apt install datagouv-cli
 
 # Homebrew
 brew tap datagouv/datagouv-cli https://github.com/datagouv/datagouv-cli.git
+brew trust datagouv/datagouv-cli
 brew update
 brew upgrade datagouv-cli
 ```

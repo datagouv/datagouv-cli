@@ -42,6 +42,10 @@ install_via_brew() {
       return
     fi
   fi
+  if brew trust --help >/dev/null 2>&1; then
+    log "Trusting Homebrew tap ${BREW_TAP}..."
+    brew trust "${BREW_TAP}"
+  fi
   if ! brew install "${CLI_NAME}"; then
     log "Homebrew install failed; falling back to binary install..."
     install_via_binary
