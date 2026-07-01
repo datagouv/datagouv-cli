@@ -1,1 +1,1 @@
-"""Standalone distribution package for the data.gouv.fr CLI."""
+"""Command-line tool for data.gouv.fr."""
