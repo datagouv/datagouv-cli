@@ -1,7 +1,7 @@
 $ErrorActionPreference = 'Stop'
 
-$url = 'https://github.com/datagouv/datagouv-cli/releases/download/v0.4.1/datagouv-windows-amd64.zip'
-$checksum = '818d52e2437274b8459ff714c8ef133f2061b69ccd3106cc06c6bd4455e129a3'
+$url = 'https://github.com/datagouv/datagouv-cli/releases/download/v0.4.2/datagouv-windows-amd64.zip'
+$checksum = 'eb20352b4bbf1badcbae145c877b92ad52ada79dd1915c20528cf16a64f005f6'
 $checksumType = 'sha256'
 
 $toolsDir = Split-Path -Parent $MyInvocation.MyCommand.Definition
