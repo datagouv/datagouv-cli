@@ -71,10 +71,10 @@ The workflow then:
 
 ```bash
 # GitHub Release asset
-curl -LO https://github.com/datagouv/datagouv-cli/releases/download/vX.Y.Z/datagouv-linux-amd64
-sha256sum -c datagouv-linux-amd64.sha256
-chmod +x datagouv-linux-amd64
-./datagouv-linux-amd64 --help
+curl -LO https://github.com/datagouv/datagouv-cli/releases/download/vX.Y.Z/datagouv-linux-amd64.tar.gz
+sha256sum -c datagouv-linux-amd64.tar.gz.sha256
+tar -xzf datagouv-linux-amd64.tar.gz
+./datagouv/datagouv --help
 
 # APT
 sudo apt update
@@ -87,8 +87,9 @@ brew update
 brew upgrade datagouv
 
 # Windows binary
-Invoke-WebRequest -Uri https://github.com/datagouv/datagouv-cli/releases/download/vX.Y.Z/datagouv-windows-amd64.exe -OutFile datagouv.exe
-./datagouv.exe --help
+Invoke-WebRequest -Uri https://github.com/datagouv/datagouv-cli/releases/download/vX.Y.Z/datagouv-windows-amd64.zip -OutFile datagouv-windows-amd64.zip
+Expand-Archive datagouv-windows-amd64.zip -DestinationPath .
+./datagouv/datagouv.exe --help
 
 # Chocolatey
 choco install datagouv --source="https://github.com/datagouv/datagouv-cli/releases/download/vX.Y.Z"

@@ -17,17 +17,26 @@ curl -fsSL https://raw.githubusercontent.com/datagouv/datagouv-cli/main/scripts/
 
 ### Manual binary (all platforms)
 
-Download the binary for your platform from [GitHub Releases](https://github.com/datagouv/datagouv-cli/releases) and place it on your `PATH`:
+Download the archive for your platform from [GitHub Releases](https://github.com/datagouv/datagouv-cli/releases) and install it on your `PATH`:
 
 ```bash
 # Linux / macOS
-chmod +x datagouv-linux-amd64
-sudo mv datagouv-linux-amd64 /usr/local/bin/datagouv
+curl -LO https://github.com/datagouv/datagouv-cli/releases/latest/download/datagouv-$(uname -s | tr '[:upper:]' '[:lower:]' | sed 's/darwin/macos/')-$(uname -m | sed 's/x86_64/amd64/;s/aarch64/arm64/').tar.gz
+tar -xzf datagouv-*.tar.gz
+sudo install -d /usr/local/lib/datagouv
+sudo cp -a datagouv/. /usr/local/lib/datagouv/
+sudo ln -sf /usr/local/lib/datagouv/datagouv /usr/local/bin/datagouv
 ```
 
 ```powershell
 # Windows
-Move-Item datagouv-windows-amd64.exe "$env:LOCALAPPDATA\Microsoft\WindowsApps\datagouv.exe"
+Invoke-WebRequest -Uri https://github.com/datagouv/datagouv-cli/releases/latest/download/datagouv-windows-amd64.zip -OutFile datagouv-windows-amd64.zip
+Expand-Archive datagouv-windows-amd64.zip -DestinationPath .
+$installDir = "$env:LOCALAPPDATA\Programs\datagouv"
+New-Item -ItemType Directory -Force -Path $installDir | Out-Null
+Copy-Item -Recurse -Force datagouv\* $installDir
+$env:Path += ";$installDir"
+[Environment]::SetEnvironmentVariable("Path", $env:Path, "User")
 ```
 
 ### Manual APT (Debian / Ubuntu)
@@ -143,8 +152,8 @@ uv run datagouv --help
 Build a local binary:
 
 ```bash
-uv run pyinstaller packaging/pyinstaller/datagouv.spec
-./dist/datagouv --help
+uv run pyinstaller packaging/pyinstaller/datagouv.spec --clean --noconfirm
+./dist/datagouv/datagouv --help
 ```
 
 ## 🤝 Contributing

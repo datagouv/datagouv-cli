@@ -15,10 +15,10 @@ generate_formula() {
   local class_suffix="$1"
   local binary_suffix="$2"
   local output_file="${OUTPUT_DIR}/${CLI_NAME}${class_suffix}.rb"
-  local binary_path="${ARTIFACTS_DIR}/${CLI_NAME}-${binary_suffix}"
-  local sha256_path="${binary_path}.sha256"
+  local archive_path="${ARTIFACTS_DIR}/${CLI_NAME}-${binary_suffix}.tar.gz"
+  local sha256_path="${archive_path}.sha256"
 
-  if [[ ! -f "${binary_path}" || ! -f "${sha256_path}" ]]; then
+  if [[ ! -f "${archive_path}" || ! -f "${sha256_path}" ]]; then
     echo "Missing macOS artifact for ${binary_suffix}" >&2
     exit 1
   fi
@@ -30,17 +30,18 @@ generate_formula() {
 class Datagouv${class_suffix} < Formula
   desc "CLI for data.gouv.fr"
   homepage "https://github.com/${REPO}"
-  url "${BASE_URL}/${CLI_NAME}-${binary_suffix}"
+  url "${BASE_URL}/${CLI_NAME}-${binary_suffix}.tar.gz"
   version "${VERSION}"
   sha256 "${sha256}"
   license "MIT"
 
   def install
-    bin.install "${CLI_NAME}-${binary_suffix}" => "${CLI_NAME}"
+    libexec.install "${CLI_NAME}"
+    bin.install_symlink libexec/"${CLI_NAME}/${CLI_NAME}" => "${CLI_NAME}"
   end
 
   test do
-    assert_match "datagouv", shell_output("#{bin}/${CLI_NAME} --help")
+    assert_match "${CLI_NAME}", shell_output("#{bin}/${CLI_NAME} --help")
   end
 end
 EOF
@@ -56,11 +57,11 @@ class Datagouv < Formula
 
   on_macos do
     if Hardware::CPU.arm?
-      url "${BASE_URL}/${CLI_NAME}-macos-arm64"
-      sha256 "$(awk '{print $1}' "${ARTIFACTS_DIR}/${CLI_NAME}-macos-arm64.sha256")"
+      url "${BASE_URL}/${CLI_NAME}-macos-arm64.tar.gz"
+      sha256 "$(awk '{print $1}' "${ARTIFACTS_DIR}/${CLI_NAME}-macos-arm64.tar.gz.sha256")"
     else
-      url "${BASE_URL}/${CLI_NAME}-macos-amd64"
-      sha256 "$(awk '{print $1}' "${ARTIFACTS_DIR}/${CLI_NAME}-macos-amd64.sha256")"
+      url "${BASE_URL}/${CLI_NAME}-macos-amd64.tar.gz"
+      sha256 "$(awk '{print $1}' "${ARTIFACTS_DIR}/${CLI_NAME}-macos-amd64.tar.gz.sha256")"
     end
   end
 
@@ -68,15 +69,12 @@ class Datagouv < Formula
   license "MIT"
 
   def install
-    if Hardware::CPU.arm?
-      bin.install "${CLI_NAME}-macos-arm64" => "${CLI_NAME}"
-    else
-      bin.install "${CLI_NAME}-macos-amd64" => "${CLI_NAME}"
-    end
+    libexec.install "${CLI_NAME}"
+    bin.install_symlink libexec/"${CLI_NAME}/${CLI_NAME}" => "${CLI_NAME}"
   end
 
   test do
-    assert_match "datagouv", shell_output("#{bin}/${CLI_NAME} --help")
+    assert_match "${CLI_NAME}", shell_output("#{bin}/${CLI_NAME} --help")
   end
 end
 EOF

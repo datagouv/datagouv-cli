@@ -6,6 +6,7 @@ APT_BASE_URL="${DATAGOUV_APT_BASE_URL:-https://datagouv.github.io/datagouv-cli}"
 BREW_TAP="${DATAGOUV_BREW_TAP:-datagouv/datagouv-cli}"
 BREW_TAP_URL="${DATAGOUV_BREW_TAP_URL:-https://github.com/${REPO}.git}"
 CLI_NAME="datagouv"
+INSTALL_DIR="/usr/local/lib/${CLI_NAME}"
 
 log() {
   echo "[${CLI_NAME}] $*"
@@ -54,6 +55,7 @@ install_via_brew() {
 
 install_via_binary() {
   require_command curl
+  require_command tar
   require_command uname
 
   local os arch suffix version asset url tmpdir
@@ -77,7 +79,7 @@ install_via_binary() {
     version="$(curl -fsSL "https://api.github.com/repos/${REPO}/releases/latest" | jq -r '.tag_name' | sed 's/^v//')"
   fi
 
-  asset="${CLI_NAME}-${suffix}"
+  asset="${CLI_NAME}-${suffix}.tar.gz"
   url="https://github.com/${REPO}/releases/download/v${version}/${asset}"
   tmpdir="$(mktemp -d)"
   trap 'rm -rf "${tmpdir}"' EXIT
@@ -97,9 +99,12 @@ install_via_binary() {
     }
   fi
 
-  chmod +x "${tmpdir}/${asset}"
-  sudo install -m 0755 "${tmpdir}/${asset}" "/usr/local/bin/${CLI_NAME}"
-  log "Installed ${CLI_NAME} to /usr/local/bin/${CLI_NAME}"
+  tar -xzf "${tmpdir}/${asset}" -C "${tmpdir}"
+  sudo install -d "${INSTALL_DIR}"
+  sudo rm -rf "${INSTALL_DIR:?}/"*
+  sudo cp -a "${tmpdir}/${CLI_NAME}/." "${INSTALL_DIR}/"
+  sudo ln -sf "${INSTALL_DIR}/${CLI_NAME}" "/usr/local/bin/${CLI_NAME}"
+  log "Installed ${CLI_NAME} to ${INSTALL_DIR} with symlink in /usr/local/bin/${CLI_NAME}"
 }
 
 main() {

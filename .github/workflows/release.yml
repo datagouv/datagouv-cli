@@ -53,26 +53,21 @@ jobs:
 
       - name: Smoke test (Unix)
         if: runner.os != 'Windows'
-        run: ./scripts/smoke-test-binary.sh ./dist/datagouv
+        run: ./scripts/smoke-test-binary.sh ./dist/datagouv/datagouv
 
       - name: Smoke test (Windows)
         if: runner.os == 'Windows'
         shell: pwsh
-        run: ./scripts/smoke-test-binary.ps1 ./dist/datagouv.exe
+        run: ./scripts/smoke-test-binary.ps1 ./dist/datagouv/datagouv.exe
 
-      - name: Rename binary (Unix)
+      - name: Package distribution (Unix)
         if: runner.os != 'Windows'
-        run: |
-          cp dist/datagouv "dist/datagouv-${{ matrix.suffix }}"
-          sha256sum "dist/datagouv-${{ matrix.suffix }}" > "dist/datagouv-${{ matrix.suffix }}.sha256"
+        run: ./scripts/package-binary.sh dist/datagouv "dist/datagouv-${{ matrix.suffix }}.tar.gz"
 
-      - name: Rename binary (Windows)
+      - name: Package distribution (Windows)
         if: runner.os == 'Windows'
         shell: pwsh
-        run: |
-          Copy-Item dist/datagouv.exe "dist/datagouv-${{ matrix.suffix }}.exe"
-          $hash = (Get-FileHash "dist/datagouv-${{ matrix.suffix }}.exe" -Algorithm SHA256).Hash.ToLower()
-          Set-Content -Path "dist/datagouv-${{ matrix.suffix }}.exe.sha256" -Value $hash
+        run: ./scripts/package-binary.ps1 -DistDir dist/datagouv -Output "dist/datagouv-${{ matrix.suffix }}.zip"
 
       - name: Build Chocolatey package
         if: runner.os == 'Windows'
@@ -91,8 +86,8 @@ jobs:
         with:
           name: datagouv-${{ matrix.suffix }}
           path: |
-            dist/datagouv-${{ matrix.suffix }}
-            dist/datagouv-${{ matrix.suffix }}.sha256
+            dist/datagouv-${{ matrix.suffix }}.tar.gz
+            dist/datagouv-${{ matrix.suffix }}.tar.gz.sha256
 
       - name: Upload artifact (Windows)
         if: runner.os == 'Windows'
@@ -100,8 +95,8 @@ jobs:
         with:
           name: datagouv-${{ matrix.suffix }}
           path: |
-            dist/datagouv-${{ matrix.suffix }}.exe
-            dist/datagouv-${{ matrix.suffix }}.exe.sha256
+            dist/datagouv-${{ matrix.suffix }}.zip
+            dist/datagouv-${{ matrix.suffix }}.zip.sha256
             dist/datagouv.*.nupkg
 
   release:
@@ -145,12 +140,15 @@ jobs:
           for arch_pair in amd64:linux-amd64 arm64:linux-arm64; do
             deb_arch="${arch_pair%%:*}"
             suffix="${arch_pair##*:}"
-            binary="artifacts/datagouv-${suffix}"
-            if [[ ! -f "${binary}" ]]; then
-              echo "Missing binary: ${binary}" >&2
+            archive="artifacts/datagouv-${suffix}.tar.gz"
+            if [[ ! -f "${archive}" ]]; then
+              echo "Missing archive: ${archive}" >&2
               exit 1
             fi
-            packaging/deb/build-deb.sh "${binary}" "${VERSION}" "${deb_arch}"
+            extract_dir="$(mktemp -d)"
+            tar -xzf "${archive}" -C "${extract_dir}"
+            packaging/deb/build-deb.sh "${extract_dir}/datagouv" "${VERSION}" "${deb_arch}"
+            rm -rf "${extract_dir}"
           done
 
       - name: Publish APT repository

@@ -9,12 +9,12 @@ REPO="${GITHUB_REPOSITORY:-datagouv/datagouv-cli}"
 BASE_URL="https://github.com/${REPO}/releases/download/v${VERSION}"
 CLI_NAME="datagouv"
 BINARY_SUFFIX="windows-amd64"
-BINARY="${CLI_NAME}-${BINARY_SUFFIX}.exe"
-BINARY_PATH="${ARTIFACTS_DIR}/${BINARY}"
-SHA256_PATH="${BINARY_PATH}.sha256"
+ARCHIVE="${CLI_NAME}-${BINARY_SUFFIX}.zip"
+ARCHIVE_PATH="${ARTIFACTS_DIR}/${ARCHIVE}"
+SHA256_PATH="${ARCHIVE_PATH}.sha256"
 
-if [[ ! -f "${BINARY_PATH}" || ! -f "${SHA256_PATH}" ]]; then
-  echo "Missing Windows artifact: ${BINARY_PATH} or ${SHA256_PATH}" >&2
+if [[ ! -f "${ARCHIVE_PATH}" || ! -f "${SHA256_PATH}" ]]; then
+  echo "Missing Windows artifact: ${ARCHIVE_PATH} or ${SHA256_PATH}" >&2
   exit 1
 fi
 
@@ -43,22 +43,23 @@ EOF
 cat > "${OUTPUT_DIR}/tools/chocolateyInstall.ps1" <<EOF
 \$ErrorActionPreference = 'Stop'
 
-\$url = '${BASE_URL}/${BINARY}'
+\$url = '${BASE_URL}/${ARCHIVE}'
 \$checksum = '${SHA256}'
 \$checksumType = 'sha256'
 
 \$toolsDir = Split-Path -Parent \$MyInvocation.MyCommand.Definition
-\$file = Join-Path \$toolsDir '${CLI_NAME}.exe'
+\$installDir = Join-Path \$toolsDir '${CLI_NAME}'
+\$file = Join-Path \$installDir '${CLI_NAME}.exe'
 
 \$packageArgs = @{
   packageName   = \$env:ChocolateyPackageName
-  fileFullPath  = \$file
+  unzipLocation = \$toolsDir
   url           = \$url
   checksum      = \$checksum
   checksumType  = \$checksumType
 }
 
-Get-ChocolateyWebFile @packageArgs
+Install-ChocolateyZipPackage @packageArgs
 Install-BinFile -Path \$file -Name '${CLI_NAME}'
 EOF
 
