@@ -4,11 +4,9 @@ This document describes how to publish a new version of the standalone CLI distr
 
 `datagouv-cli` is **not published on PyPI**. Users install it via apt, Homebrew, or GitHub Release binaries.
 
-The build resolves `datagouv-client` from **PyPI** (see `pyproject.toml`). CI does not clone `datagouv_client`.
-
 ## Library dependency
 
-Current constraint: `datagouv-client>=0.5.0,<0.6.0` (PyPI **0.5.x**, library-only; CLI code lives in this repo).
+`datagouv-cli` depends on [`datagouv-client`](https://pypi.org/project/datagouv-client/) ([source](https://github.com/datagouv/datagouv_client)), a library-only package; CLI code lives in this repo. The version constraint is defined in [`pyproject.toml`](pyproject.toml). CI resolves it from PyPI and does not clone `datagouv_client`.
 
 When a new **`datagouv-client`** version is published on PyPI, update **this repo** (`datagouv-cli`) to pick it up:
 
