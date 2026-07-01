@@ -53,56 +53,56 @@ jobs:
 
       - name: Smoke test (Unix)
         if: runner.os != 'Windows'
-        run: ./scripts/smoke-test-binary.sh ./dist/datagouv-cli
+        run: ./scripts/smoke-test-binary.sh ./dist/datagouv
 
       - name: Smoke test (Windows)
         if: runner.os == 'Windows'
         shell: pwsh
-        run: ./scripts/smoke-test-binary.ps1 ./dist/datagouv-cli.exe
+        run: ./scripts/smoke-test-binary.ps1 ./dist/datagouv.exe
 
       - name: Rename binary (Unix)
         if: runner.os != 'Windows'
         run: |
-          cp dist/datagouv-cli "dist/datagouv-cli-${{ matrix.suffix }}"
-          sha256sum "dist/datagouv-cli-${{ matrix.suffix }}" > "dist/datagouv-cli-${{ matrix.suffix }}.sha256"
+          cp dist/datagouv "dist/datagouv-${{ matrix.suffix }}"
+          sha256sum "dist/datagouv-${{ matrix.suffix }}" > "dist/datagouv-${{ matrix.suffix }}.sha256"
 
       - name: Rename binary (Windows)
         if: runner.os == 'Windows'
         shell: pwsh
         run: |
-          Copy-Item dist/datagouv-cli.exe "dist/datagouv-cli-${{ matrix.suffix }}.exe"
-          $hash = (Get-FileHash "dist/datagouv-cli-${{ matrix.suffix }}.exe" -Algorithm SHA256).Hash.ToLower()
-          Set-Content -Path "dist/datagouv-cli-${{ matrix.suffix }}.exe.sha256" -Value $hash
+          Copy-Item dist/datagouv.exe "dist/datagouv-${{ matrix.suffix }}.exe"
+          $hash = (Get-FileHash "dist/datagouv-${{ matrix.suffix }}.exe" -Algorithm SHA256).Hash.ToLower()
+          Set-Content -Path "dist/datagouv-${{ matrix.suffix }}.exe.sha256" -Value $hash
 
       - name: Build Chocolatey package
         if: runner.os == 'Windows'
         shell: bash
         run: |
           VERSION="${GITHUB_REF_NAME#v}"
-          mkdir -p packaging/chocolatey/generated chocolatey/datagouv-cli/tools
+          mkdir -p packaging/chocolatey/generated chocolatey/datagouv/tools
           packaging/chocolatey/generate-nuspec.sh "${VERSION}" dist packaging/chocolatey/generated
-          cp packaging/chocolatey/generated/datagouv-cli.nuspec chocolatey/datagouv-cli/
-          cp packaging/chocolatey/generated/tools/chocolateyInstall.ps1 chocolatey/datagouv-cli/tools/
-          choco pack chocolatey/datagouv-cli/datagouv-cli.nuspec --outputdirectory dist
+          cp packaging/chocolatey/generated/datagouv.nuspec chocolatey/datagouv/
+          cp packaging/chocolatey/generated/tools/chocolateyInstall.ps1 chocolatey/datagouv/tools/
+          choco pack chocolatey/datagouv/datagouv.nuspec --outputdirectory dist
 
       - name: Upload artifact (Unix)
         if: runner.os != 'Windows'
         uses: actions/upload-artifact@v4
         with:
-          name: datagouv-cli-${{ matrix.suffix }}
+          name: datagouv-${{ matrix.suffix }}
           path: |
-            dist/datagouv-cli-${{ matrix.suffix }}
-            dist/datagouv-cli-${{ matrix.suffix }}.sha256
+            dist/datagouv-${{ matrix.suffix }}
+            dist/datagouv-${{ matrix.suffix }}.sha256
 
       - name: Upload artifact (Windows)
         if: runner.os == 'Windows'
         uses: actions/upload-artifact@v4
         with:
-          name: datagouv-cli-${{ matrix.suffix }}
+          name: datagouv-${{ matrix.suffix }}
           path: |
-            dist/datagouv-cli-${{ matrix.suffix }}.exe
-            dist/datagouv-cli-${{ matrix.suffix }}.exe.sha256
-            dist/datagouv-cli.*.nupkg
+            dist/datagouv-${{ matrix.suffix }}.exe
+            dist/datagouv-${{ matrix.suffix }}.exe.sha256
+            dist/datagouv.*.nupkg
 
   release:
     name: Publish release and packages
@@ -145,7 +145,7 @@ jobs:
           for arch_pair in amd64:linux-amd64 arm64:linux-arm64; do
             deb_arch="${arch_pair%%:*}"
             suffix="${arch_pair##*:}"
-            binary="artifacts/datagouv-cli-${suffix}"
+            binary="artifacts/datagouv-${suffix}"
             if [[ ! -f "${binary}" ]]; then
               echo "Missing binary: ${binary}" >&2
               exit 1

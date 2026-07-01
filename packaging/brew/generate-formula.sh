@@ -7,7 +7,7 @@ OUTPUT_DIR="${3:?Usage: generate-formula.sh <version> <artifacts-dir> <output-di
 
 REPO="${GITHUB_REPOSITORY:-datagouv/datagouv-cli}"
 BASE_URL="https://github.com/${REPO}/releases/download/v${VERSION}"
-CLI_NAME="datagouv-cli"
+CLI_NAME="datagouv"
 
 mkdir -p "${OUTPUT_DIR}"
 
@@ -27,7 +27,7 @@ generate_formula() {
   sha256="$(awk '{print $1}' "${sha256_path}")"
 
   cat > "${output_file}" <<EOF
-class DatagouvCli${class_suffix} < Formula
+class Datagouv${class_suffix} < Formula
   desc "CLI for data.gouv.fr"
   homepage "https://github.com/${REPO}"
   url "${BASE_URL}/${CLI_NAME}-${binary_suffix}"
@@ -50,7 +50,7 @@ generate_formula "" "macos-arm64"
 generate_formula "Intel" "macos-amd64"
 
 cat > "${OUTPUT_DIR}/${CLI_NAME}.rb" <<EOF
-class DatagouvCli < Formula
+class Datagouv < Formula
   desc "CLI for data.gouv.fr"
   homepage "https://github.com/${REPO}"
 

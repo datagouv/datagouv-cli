@@ -53,7 +53,7 @@ jobs:
         run: uv run pyinstaller packaging/pyinstaller/datagouv.spec --clean --noconfirm
 
       - name: Smoke test
-        run: ./scripts/smoke-test-binary.sh ./dist/datagouv-cli
+        run: ./scripts/smoke-test-binary.sh ./dist/datagouv
 
   build-windows:
     name: Validate PyInstaller build (Windows)
@@ -75,4 +75,4 @@ jobs:
 
       - name: Smoke test
         shell: pwsh
-        run: ./scripts/smoke-test-binary.ps1 ./dist/datagouv-cli.exe
+        run: ./scripts/smoke-test-binary.ps1 ./dist/datagouv.exe

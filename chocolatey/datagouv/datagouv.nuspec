@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <package xmlns="http://schemas.microsoft.com/packaging/2015/06/nuspec.xsd">
   <metadata>
-    <id>datagouv-cli</id>
+    <id>datagouv</id>
     <version>0.3.0</version>
-    <title>datagouv-cli</title>
+    <title>datagouv</title>
     <authors>data.gouv.fr</authors>
     <projectUrl>https://github.com/datagouv/datagouv-cli</projectUrl>
     <licenseUrl>https://opensource.org/licenses/MIT</licenseUrl>

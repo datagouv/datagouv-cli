@@ -1,5 +1,5 @@
 param(
-    [string]$Binary = "./dist/datagouv-cli.exe"
+    [string]$Binary = "./dist/datagouv.exe"
 )
 
 $ErrorActionPreference = "Stop"

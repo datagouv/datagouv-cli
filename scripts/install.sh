@@ -5,7 +5,7 @@ REPO="${DATAGOUV_CLI_REPO:-datagouv/datagouv-cli}"
 APT_BASE_URL="${DATAGOUV_APT_BASE_URL:-https://datagouv.github.io/datagouv-cli}"
 BREW_TAP="${DATAGOUV_BREW_TAP:-datagouv/datagouv-cli}"
 BREW_TAP_URL="${DATAGOUV_BREW_TAP_URL:-https://github.com/${REPO}.git}"
-CLI_NAME="datagouv-cli"
+CLI_NAME="datagouv"
 
 log() {
   echo "[${CLI_NAME}] $*"

@@ -7,7 +7,7 @@ DEB_ARCH="${3:?Usage: build-deb.sh <binary> <version> <deb-arch>}"
 
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 OUTPUT_DIR="${SCRIPT_DIR}"
-PACKAGE_NAME="datagouv-cli"
+PACKAGE_NAME="datagouv"
 OUTPUT_FILE="${OUTPUT_DIR}/${PACKAGE_NAME}_${VERSION}_${DEB_ARCH}.deb"
 
 if [[ ! -f "${BINARY}" ]]; then
@@ -34,7 +34,7 @@ fpm \
   --category utils \
   --deb-no-default-config-files \
   --package "${OUTPUT_FILE}" \
-  "${BINARY}=/usr/local/bin/datagouv-cli"
+  "${BINARY}=/usr/local/bin/datagouv"
 
 rm -f "${CONTROL_FILE}"
 

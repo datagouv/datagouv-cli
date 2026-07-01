@@ -16,7 +16,7 @@ if [[ -z "${APT_GPG_PRIVATE_KEY:-}" ]]; then
   sed -i '/^SignWith:/d' "${REPO_DIR}/conf/distributions"
 fi
 
-for deb_file in "${DEB_DIR}"/datagouv-cli_"${VERSION}"_*.deb; do
+for deb_file in "${DEB_DIR}"/datagouv_"${VERSION}"_*.deb; do
   if [[ ! -f "${deb_file}" ]]; then
     echo "Missing Debian package: ${deb_file}" >&2
     exit 1
@@ -36,9 +36,9 @@ if [[ -d "${REPO_DIR}/pool" ]]; then
 fi
 
 if [[ -n "${APT_GPG_PRIVATE_KEY:-}" ]]; then
-  gpg --armor --export > "${GH_PAGES_DIR}/datagouv-cli.gpg"
+  gpg --armor --export > "${GH_PAGES_DIR}/datagouv.gpg"
 else
-  echo "Skipping datagouv-cli.gpg export because APT repository is unsigned." >&2
+  echo "Skipping datagouv.gpg export because APT repository is unsigned." >&2
 fi
 
 echo "APT repository exported to ${GH_PAGES_DIR}"

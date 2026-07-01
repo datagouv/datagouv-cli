@@ -4,7 +4,7 @@ set -euo pipefail
 VERSION="${1:?Usage: update-tap.sh <version> <formula-dir>}"
 FORMULA_DIR="${2:?Usage: update-tap.sh <version> <formula-dir>}"
 
-CLI_NAME="datagouv-cli"
+CLI_NAME="datagouv"
 DEFAULT_BRANCH="${DEFAULT_BRANCH:-main}"
 FORMULA_PATH="Formula/${CLI_NAME}.rb"
 

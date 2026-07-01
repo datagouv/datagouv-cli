@@ -17,7 +17,7 @@ Source = "https://github.com/datagouv/datagouv-cli"
 Library = "https://github.com/datagouv/datagouv_client"
 
 [project.scripts]
-datagouv-cli = "datagouv_cli.cli:app"
+datagouv = "datagouv_cli.cli:app"
 
 [dependency-groups]
 dev = [

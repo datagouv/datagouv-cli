@@ -7,7 +7,7 @@ OUTPUT_DIR="${3:?Usage: generate-nuspec.sh <version> <artifacts-dir> <output-dir
 
 REPO="${GITHUB_REPOSITORY:-datagouv/datagouv-cli}"
 BASE_URL="https://github.com/${REPO}/releases/download/v${VERSION}"
-CLI_NAME="datagouv-cli"
+CLI_NAME="datagouv"
 BINARY_SUFFIX="windows-amd64"
 BINARY="${CLI_NAME}-${BINARY_SUFFIX}.exe"
 BINARY_PATH="${ARTIFACTS_DIR}/${BINARY}"
@@ -28,7 +28,7 @@ cat > "${OUTPUT_DIR}/${CLI_NAME}.nuspec" <<EOF
   <metadata>
     <id>${CLI_NAME}</id>
     <version>${VERSION}</version>
-    <title>datagouv-cli</title>
+    <title>datagouv</title>
     <authors>data.gouv.fr</authors>
     <projectUrl>https://github.com/${REPO}</projectUrl>
     <licenseUrl>https://opensource.org/licenses/MIT</licenseUrl>

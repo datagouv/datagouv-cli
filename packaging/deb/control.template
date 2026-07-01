@@ -1,4 +1,4 @@
-Package: datagouv-cli
+Package: datagouv
 Version: @VERSION@
 Section: utils
 Priority: optional

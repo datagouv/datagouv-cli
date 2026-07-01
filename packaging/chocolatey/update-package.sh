@@ -4,7 +4,7 @@ set -euo pipefail
 VERSION="${1:?Usage: update-package.sh <version> <package-dir>}"
 PACKAGE_DIR="${2:?Usage: update-package.sh <version> <package-dir>}"
 
-CLI_NAME="datagouv-cli"
+CLI_NAME="datagouv"
 DEFAULT_BRANCH="${DEFAULT_BRANCH:-main}"
 PACKAGE_PATH="chocolatey/${CLI_NAME}"
 NUSPEC_FILE="${CLI_NAME}.nuspec"
