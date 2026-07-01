@@ -27,7 +27,8 @@ sudo apt update && sudo apt install datagouv-cli
 ### Manual Homebrew (macOS)
 
 ```bash
-brew install datagouv/tap/datagouv-cli
+brew tap datagouv/datagouv-cli https://github.com/datagouv/datagouv-cli.git
+brew install datagouv-cli
 ```
 
 ### Manual binary

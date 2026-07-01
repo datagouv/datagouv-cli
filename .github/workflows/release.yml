@@ -134,10 +134,7 @@ jobs:
           mkdir -p packaging/brew/generated
           packaging/brew/generate-formula.sh "${VERSION}" artifacts packaging/brew/generated
 
-      - name: Update Homebrew tap
-        env:
-          HOMEBREW_TAP_TOKEN: ${{ secrets.HOMEBREW_TAP_TOKEN }}
-          HOMEBREW_TAP_REPO: ${{ vars.HOMEBREW_TAP_REPO }}
+      - name: Update Homebrew formula
         run: packaging/brew/update-tap.sh "${GITHUB_REF_NAME#v}" packaging/brew/generated
 
       - name: Upload APT repository to GitHub Pages

@@ -3,7 +3,8 @@ set -euo pipefail
 
 REPO="${DATAGOUV_CLI_REPO:-datagouv/datagouv-cli}"
 APT_BASE_URL="${DATAGOUV_APT_BASE_URL:-https://datagouv.github.io/datagouv-cli}"
-BREW_TAP="${DATAGOUV_BREW_TAP:-datagouv/tap}"
+BREW_TAP="${DATAGOUV_BREW_TAP:-datagouv/datagouv-cli}"
+BREW_TAP_URL="${DATAGOUV_BREW_TAP_URL:-https://github.com/${REPO}.git}"
 CLI_NAME="datagouv-cli"
 
 log() {
@@ -35,9 +36,16 @@ install_via_brew() {
   require_command brew
   if ! brew tap | grep -q "^${BREW_TAP}$"; then
     log "Adding Homebrew tap ${BREW_TAP}..."
-    brew tap "${BREW_TAP}"
+    if ! brew tap "${BREW_TAP}" "${BREW_TAP_URL}"; then
+      log "Homebrew tap unavailable; falling back to binary install..."
+      install_via_binary
+      return
+    fi
   fi
-  brew install "${CLI_NAME}"
+  if ! brew install "${CLI_NAME}"; then
+    log "Homebrew install failed; falling back to binary install..."
+    install_via_binary
+  fi
 }
 
 install_via_binary() {

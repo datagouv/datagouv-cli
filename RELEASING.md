@@ -26,13 +26,16 @@ Configure these GitHub repository settings once:
 | Setting | Purpose |
 |---------|---------|
 | Secret `APT_GPG_PRIVATE_KEY` | Signs the APT repository (ASCII-armored private key) |
-| Secret `HOMEBREW_TAP_TOKEN` | PAT with write access to the Homebrew tap repository |
-| Variable `HOMEBREW_TAP_REPO` | Tap repository, default `datagouv/homebrew-tap` |
 | GitHub Pages (`github-pages` environment) | Hosts the APT repository |
 
 Export the public GPG key to the APT repo root as `datagouv-cli.gpg` during release.
 
-Bootstrap the Homebrew tap from [`homebrew-tap/`](homebrew-tap/README.md).
+The Homebrew formula lives in [`Formula/datagouv-cli.rb`](Formula/datagouv-cli.rb) at the repo root. Because this repository is not named `homebrew-*`, users must tap it with an explicit URL:
+
+```bash
+brew tap datagouv/datagouv-cli https://github.com/datagouv/datagouv-cli.git
+brew install datagouv-cli
+```
 
 ## Cut a release
 
@@ -55,7 +58,7 @@ The workflow then:
 - Creates a GitHub Release with auto-generated notes and uploads assets with checksums
 - Builds `.deb` packages
 - Publishes the APT repository to GitHub Pages
-- Updates the Homebrew tap formula
+- Updates `Formula/datagouv-cli.rb` on `main`
 
 ## Verify a release
 
@@ -71,6 +74,7 @@ sudo apt update
 sudo apt install datagouv-cli
 
 # Homebrew
+brew tap datagouv/datagouv-cli https://github.com/datagouv/datagouv-cli.git
 brew update
 brew upgrade datagouv-cli
 ```
@@ -86,7 +90,7 @@ brew upgrade datagouv-cli
 
 - **PyInstaller build fails in CI**: check hidden imports in [`packaging/pyinstaller/datagouv.spec`](packaging/pyinstaller/datagouv.spec).
 - **APT install fails**: verify GitHub Pages deployment and that `datagouv-cli.gpg` is present.
-- **Homebrew tap not updated**: verify `HOMEBREW_TAP_TOKEN` and that the tap repository exists.
+- **Homebrew formula not updated**: verify the release workflow has `contents: write` permission and that `Formula/datagouv-cli.rb` was pushed to `main`.
 
 ## Local development against unreleased library changes
 
