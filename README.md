@@ -5,14 +5,29 @@
 
 `datagouv-cli` is a command-line tool for [data.gouv.fr](https://www.data.gouv.fr): work with datasets, organizations, resources, and topics from your terminal.
 
+## 🚀 Installation
+
 Install it on Linux, macOS, or Windows — no other dependency required.
 
-On Linux or macOS:
-
-## 🚀 Installation
+### Quick install (Linux / macOS)
 
 ```bash
 curl -fsSL https://raw.githubusercontent.com/datagouv/datagouv-cli/main/scripts/install.sh | bash
+```
+
+### Manual binary (all platforms)
+
+Download the binary for your platform from [GitHub Releases](https://github.com/datagouv/datagouv-cli/releases) and place it on your `PATH`:
+
+```bash
+# Linux / macOS
+chmod +x datagouv-cli-linux-amd64
+sudo mv datagouv-cli-linux-amd64 /usr/local/bin/datagouv-cli
+```
+
+```powershell
+# Windows
+Move-Item datagouv-cli-windows-amd64.exe "$env:LOCALAPPDATA\Microsoft\WindowsApps\datagouv-cli.exe"
 ```
 
 ### Manual APT (Debian / Ubuntu)
@@ -40,28 +55,6 @@ From a [GitHub Release](https://github.com/datagouv/datagouv-cli/releases) (repl
 
 ```powershell
 choco install datagouv-cli --source="https://github.com/datagouv/datagouv-cli/releases/download/vX.Y.Z"
-```
-
-From a clone of this repository:
-
-```powershell
-git clone https://github.com/datagouv/datagouv-cli.git
-choco install datagouv-cli --source=".\datagouv-cli\chocolatey"
-```
-
-### Manual binary
-
-Download the binary for your platform from [GitHub Releases](https://github.com/datagouv/datagouv-cli/releases) and place it on your `PATH`:
-
-```bash
-# Linux / macOS
-chmod +x datagouv-cli-linux-amd64
-sudo mv datagouv-cli-linux-amd64 /usr/local/bin/datagouv-cli
-```
-
-```powershell
-# Windows
-Move-Item datagouv-cli-windows-amd64.exe "$env:LOCALAPPDATA\Microsoft\WindowsApps\datagouv-cli.exe"
 ```
 
 ## Quick start
