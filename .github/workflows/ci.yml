@@ -34,8 +34,8 @@ jobs:
       - name: Pytest
         run: uv run pytest
 
-  build-linux:
-    name: Validate PyInstaller build (Linux)
+  build-unix:
+    name: Validate PyInstaller build (Unix)
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
