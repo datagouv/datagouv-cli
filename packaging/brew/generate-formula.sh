@@ -36,8 +36,10 @@ class Datagouv${class_suffix} < Formula
   license "MIT"
 
   def install
-    libexec.install "${CLI_NAME}"
-    bin.install_symlink libexec/"${CLI_NAME}/${CLI_NAME}" => "${CLI_NAME}"
+    # Homebrew chdirs into the single top-level folder of the tarball, so the
+    # bundle contents (${CLI_NAME} + _internal) are at the build root.
+    libexec.install Dir["*"]
+    bin.install_symlink libexec/"${CLI_NAME}" => "${CLI_NAME}"
   end
 
   test do
@@ -69,8 +71,10 @@ class Datagouv < Formula
   license "MIT"
 
   def install
-    libexec.install "${CLI_NAME}"
-    bin.install_symlink libexec/"${CLI_NAME}/${CLI_NAME}" => "${CLI_NAME}"
+    # Homebrew chdirs into the single top-level folder of the tarball, so the
+    # bundle contents (${CLI_NAME} + _internal) are at the build root.
+    libexec.install Dir["*"]
+    bin.install_symlink libexec/"${CLI_NAME}" => "${CLI_NAME}"
   end
 
   test do

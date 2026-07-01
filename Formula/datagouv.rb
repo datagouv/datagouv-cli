@@ -16,8 +16,10 @@ class Datagouv < Formula
   license "MIT"
 
   def install
-    libexec.install "datagouv"
-    bin.install_symlink libexec/"datagouv/datagouv" => "datagouv"
+    # Homebrew chdirs into the single top-level folder of the tarball, so the
+    # bundle contents (datagouv + _internal) are at the build root.
+    libexec.install Dir["*"]
+    bin.install_symlink libexec/"datagouv" => "datagouv"
   end
 
   test do
