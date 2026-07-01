@@ -4,23 +4,20 @@ class Datagouv < Formula
 
   on_macos do
     if Hardware::CPU.arm?
-      url "https://github.com/datagouv/datagouv-cli/releases/download/v0.4.0/datagouv-macos-arm64"
-      sha256 "386cd4c0177e022f179803ed3ec4d79c42681e0936ab20dda8aa72ffbbd0fc56"
+      url "https://github.com/datagouv/datagouv-cli/releases/download/v0.4.1/datagouv-macos-arm64.tar.gz"
+      sha256 "d21d03144c44dfdaab7f5952fb12c459f85615cde851befcba67bdc6d0642b25"
     else
-      url "https://github.com/datagouv/datagouv-cli/releases/download/v0.4.0/datagouv-macos-amd64"
-      sha256 "ae84808f89532f37e1dba27251e5b83d5740041599df7749ac8911d0e5d58f24"
+      url "https://github.com/datagouv/datagouv-cli/releases/download/v0.4.1/datagouv-macos-amd64.tar.gz"
+      sha256 "814861799ceaef2ab4581c47a8a934e246575d02a237796df16908203d3a7ea5"
     end
   end
 
-  version "0.4.0"
+  version "0.4.1"
   license "MIT"
 
   def install
-    if Hardware::CPU.arm?
-      bin.install "datagouv-macos-arm64" => "datagouv"
-    else
-      bin.install "datagouv-macos-amd64" => "datagouv"
-    end
+    libexec.install "datagouv"
+    bin.install_symlink libexec/"datagouv/datagouv" => "datagouv"
   end
 
   test do
