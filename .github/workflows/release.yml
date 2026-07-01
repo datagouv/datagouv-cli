@@ -34,6 +34,8 @@ jobs:
             suffix: macos-arm64
           - os: macos-15-intel
             suffix: macos-amd64
+          - os: windows-latest
+            suffix: windows-amd64
     steps:
       - uses: actions/checkout@v4
         with:
@@ -49,21 +51,58 @@ jobs:
       - name: Build binary
         run: uv run pyinstaller packaging/pyinstaller/datagouv.spec --clean --noconfirm
 
-      - name: Smoke test
+      - name: Smoke test (Unix)
+        if: runner.os != 'Windows'
         run: ./scripts/smoke-test-binary.sh ./dist/datagouv-cli
 
-      - name: Rename binary
+      - name: Smoke test (Windows)
+        if: runner.os == 'Windows'
+        shell: pwsh
+        run: ./scripts/smoke-test-binary.ps1 ./dist/datagouv-cli.exe
+
+      - name: Rename binary (Unix)
+        if: runner.os != 'Windows'
         run: |
           cp dist/datagouv-cli "dist/datagouv-cli-${{ matrix.suffix }}"
           sha256sum "dist/datagouv-cli-${{ matrix.suffix }}" > "dist/datagouv-cli-${{ matrix.suffix }}.sha256"
 
-      - name: Upload artifact
+      - name: Rename binary (Windows)
+        if: runner.os == 'Windows'
+        shell: pwsh
+        run: |
+          Copy-Item dist/datagouv-cli.exe "dist/datagouv-cli-${{ matrix.suffix }}.exe"
+          $hash = (Get-FileHash "dist/datagouv-cli-${{ matrix.suffix }}.exe" -Algorithm SHA256).Hash.ToLower()
+          Set-Content -Path "dist/datagouv-cli-${{ matrix.suffix }}.exe.sha256" -Value $hash
+
+      - name: Build Chocolatey package
+        if: runner.os == 'Windows'
+        shell: bash
+        run: |
+          VERSION="${GITHUB_REF_NAME#v}"
+          mkdir -p packaging/chocolatey/generated chocolatey/datagouv-cli/tools
+          packaging/chocolatey/generate-nuspec.sh "${VERSION}" dist packaging/chocolatey/generated
+          cp packaging/chocolatey/generated/datagouv-cli.nuspec chocolatey/datagouv-cli/
+          cp packaging/chocolatey/generated/tools/chocolateyInstall.ps1 chocolatey/datagouv-cli/tools/
+          choco pack chocolatey/datagouv-cli/datagouv-cli.nuspec --outputdirectory dist
+
+      - name: Upload artifact (Unix)
+        if: runner.os != 'Windows'
         uses: actions/upload-artifact@v4
         with:
           name: datagouv-cli-${{ matrix.suffix }}
           path: |
             dist/datagouv-cli-${{ matrix.suffix }}
             dist/datagouv-cli-${{ matrix.suffix }}.sha256
+
+      - name: Upload artifact (Windows)
+        if: runner.os == 'Windows'
+        uses: actions/upload-artifact@v4
+        with:
+          name: datagouv-cli-${{ matrix.suffix }}
+          path: |
+            dist/datagouv-cli-${{ matrix.suffix }}.exe
+            dist/datagouv-cli-${{ matrix.suffix }}.exe.sha256
+            dist/datagouv-cli.*.nupkg
 
   release:
     name: Publish release and packages
@@ -136,6 +175,15 @@ jobs:
 
       - name: Update Homebrew formula
         run: packaging/brew/update-tap.sh "${GITHUB_REF_NAME#v}" packaging/brew/generated
+
+      - name: Generate Chocolatey package metadata
+        run: |
+          VERSION="${GITHUB_REF_NAME#v}"
+          mkdir -p packaging/chocolatey/generated
+          packaging/chocolatey/generate-nuspec.sh "${VERSION}" artifacts packaging/chocolatey/generated
+
+      - name: Update Chocolatey package
+        run: packaging/chocolatey/update-package.sh "${GITHUB_REF_NAME#v}" packaging/chocolatey/generated
 
       - name: Upload APT repository to GitHub Pages
         uses: actions/upload-pages-artifact@v3

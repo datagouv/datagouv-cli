@@ -1,4 +1,4 @@
-name: Lint, test and validate Linux build
+name: Lint, test and validate builds
 
 on:
   push:
@@ -35,7 +35,7 @@ jobs:
         run: uv run pytest
 
   build-linux:
-    name: Validate PyInstaller build
+    name: Validate PyInstaller build (Linux)
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
@@ -54,3 +54,25 @@ jobs:
 
       - name: Smoke test
         run: ./scripts/smoke-test-binary.sh ./dist/datagouv-cli
+
+  build-windows:
+    name: Validate PyInstaller build (Windows)
+    runs-on: windows-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - uses: astral-sh/setup-uv@v6
+        with:
+          enable-cache: true
+
+      - name: Install dependencies
+        run: uv sync --dev
+
+      - name: Build binary
+        run: uv run pyinstaller packaging/pyinstaller/datagouv.spec --clean --noconfirm
+
+      - name: Smoke test
+        shell: pwsh
+        run: ./scripts/smoke-test-binary.ps1 ./dist/datagouv-cli.exe

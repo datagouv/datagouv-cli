@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<package xmlns="http://schemas.microsoft.com/packaging/2015/06/nuspec.xsd">
+  <metadata>
+    <id>datagouv-cli</id>
+    <version>0.2.1</version>
+    <title>datagouv-cli</title>
+    <authors>data.gouv.fr</authors>
+    <projectUrl>https://github.com/datagouv/datagouv-cli</projectUrl>
+    <licenseUrl>https://opensource.org/licenses/MIT</licenseUrl>
+    <requireLicenseAcceptance>false</requireLicenseAcceptance>
+    <description>CLI for data.gouv.fr</description>
+    <summary>Work with datasets, organizations, resources, and topics from your terminal.</summary>
+    <tags>datagouv cli data.gouv.fr</tags>
+  </metadata>
+</package>
